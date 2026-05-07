@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compte Rendu TP1 - Systèmes Embarqués</title>
+    <style>
+        /* ================= VARIABLES & THEME ================= */
+        :root {
+            --pixel-blue: #8AB4F8;
+            --pixel-dark-blue: #1A73E8;
+            --pixel-violet: #A142F4;
+            --pixel-dark-violet: #6A1B9A;
+            --bg-deep-space: #0B0B1A;
+            --glass-bg: rgba(25, 25, 45, 0.6);
+            --glass-border: rgba(138, 180, 248, 0.2);
+            --text-main: #E8EAED;
+            --text-muted: #9AA0A6;
+            --glow-shadow: 0 0 20px rgba(161, 66, 244, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep-space);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ================= ASTRONOMIC BACKGROUND ================= */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(106, 27, 154, 0.15), transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(26, 115, 232, 0.15), transparent 50%);
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.1; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px white; }
+        }
+
+        /* ================= PAGE DE GARDE ================= */
+        .cover-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .cover-header {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .cover-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--pixel-blue), var(--pixel-violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 40px rgba(161, 66, 244, 0.4);
+            line-height: 1.2;
+        }
+
+        .cover-subtitle {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            margin-bottom: 4rem;
+            font-weight: 300;
+        }
+
+        .cover-details {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem 4rem;
+            border-radius: 20px;
+            box-shadow: var(--glow-shadow);
+        }
+
+        .cover-details h3 {
+            color: var(--pixel-blue);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cover-details p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cover-details .binomial {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: var(--text-main);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            animation: bounce 2s infinite;
+            color: var(--pixel-blue);
+            font-size: 2rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        /* ================= LAYOUT & GLASSMORPHISM ================= */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--pixel-blue);
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--pixel-violet);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* ================= TABS ================= */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--pixel-blue);
+            color: var(--pixel-blue);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: linear-gradient(90deg, var(--pixel-dark-blue), var(--pixel-violet));
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 0 20px var(--pixel-violet);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= CODE BLOCKS ================= */
+        pre {
+            background: #0d0d1a;
+            border-left: 4px solid var(--pixel-violet);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            color: #a6accd;
+            margin-top: 1.5rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        code .keyword { color: #89ddff; }
+        code .function { color: #82aaff; }
+        code .comment { color: #546e7a; font-style: italic; }
+
+        /* ================= HARDWARE VISUALIZATION ================= */
+        .hardware-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0 2rem 0;
+            padding: 3rem;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .sim-status-bar {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(161, 66, 244, 0.2);
+            border: 1px solid var(--pixel-violet);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .board {
+            width: 140px;
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 0 25px rgba(255,255,255,0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .board::before {
+            content: "NUCLEO C031";
+            color: #333;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+
+        .chip {
+            width: 45px;
+            height: 45px;
+            background: #222;
+            margin-top: 25px;
+            border-radius: 4px;
+        }
+
+        .pin {
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .pin.pa5 { right: 10px; top: 60px; background: var(--pixel-blue); box-shadow: 0 0 10px var(--pixel-blue); }
+        .pin.pc13 { left: 10px; bottom: 35px; background: var(--pixel-violet); box-shadow: 0 0 10px var(--pixel-violet); }
+
+        .component { text-align: center; }
+
+        .led-viz {
+            width: 35px;
+            height: 35px;
+            background: #444;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            transition: background 0.1s, box-shadow 0.1s;
+        }
+
+        .led-viz.on {
+            background: #00ff00;
+            box-shadow: 0 0 30px #00ff00, inset 0 0 15px white;
+        }
+
+        .btn-viz {
+            width: 45px;
+            height: 45px;
+            background: var(--pixel-dark-blue);
+            border-radius: 8px;
+            margin: 0 auto 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #0d47a1;
+            transition: all 0.1s;
+            user-select: none;
+        }
+
+        .btn-viz:active {
+            transform: translateY(5px);
+            box-shadow: 0 0 0 #0d47a1;
+        }
+
+        .btn-viz.disabled {
+            background: #555;
+            box-shadow: 0 5px 0 #333;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .wire {
+            height: 4px;
+            background: #555;
+            width: 70px;
+        }
+
+        /* ================= POST-LAB ================= */
+        .qa-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .qa-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--pixel-violet);
+            padding: 2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .qa-card:hover {
+            background: rgba(161, 66, 244, 0.1);
+            transform: translateX(10px);
+        }
+
+        .qa-question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--pixel-blue);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .qa-question::before {
+            content: "Q:";
+            color: var(--pixel-violet);
+            font-size: 1.4rem;
+        }
+
+        .qa-answer {
+            color: var(--text-main);
+            line-height: 1.7;
+            padding-left: 2.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="stars"></div>
+
+    <section class="cover-page">
+        <div class="cover-header">Université / Département d'Électronique</div>
+        <h1 class="cover-title">Maîtrise des GPIO</h1>
+        <h2 class="cover-subtitle">Travaux Pratiques N°1 - Systèmes Embarqués</h2>
+        
+        <div class="cover-details">
+            <h3>Binôme Réalisateur</h3>
+            <p class="binomial">Dahane Ahmed Lamine<br>& Tabbi Meriem</p>
+            
+            <h3>Enseignante Responsable</h3>
+            <p>Mme. Afaf Saoud</p>
+            
+            <h3 style="margin-top: 1rem; font-size: 1rem; color: var(--text-muted);">Année Universitaire 2025/2026</h3>
+        </div>
+        
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <div class="container">
+        
+        <h2 class="section-title">1. Jumeau Numérique & Codes Sources</h2>
+        <section class="glass-panel">
+            
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'part1', 1)">Manip 1 : Clignotement</button>
+                <button class="tab-btn" onclick="openTab(event, 'part2', 2)">Manip 2 : Bouton Poussoir</button>
+                <button class="tab-btn" onclick="openTab(event, 'defi', 3)">Manip 3 : Défi Variateur</button>
+            </div>
+
+            <div class="hardware-container">
+                <div class="sim-status-bar" id="sim-status">Simulateur Actif : Clignotement 500ms</div>
+                <div class="component">
+                    <div class="btn-viz disabled" id="sim-btn"></div>
+                    <p style="font-weight: bold;">Bouton (PC13)</p>
+                </div>
+                <div class="wire" style="background: var(--pixel-violet);"></div>
+                <div class="board">
+                    <div class="chip"></div>
+                    <div class="pin pc13" title="PC13"></div>
+                    <div class="pin pa5" title="PA5"></div>
+                </div>
+                <div class="wire" style="background: var(--pixel-blue);"></div>
+                <div class="component">
+                    <div class="led-viz" id="sim-led"></div>
+                    <p style="font-weight: bold;">LED Externe (PA5)</p>
+                </div>
+            </div>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;" id="sim-helper">
+                *Le bouton est ignoré dans cette manipulation.*
+            </p>
+
+            <div id="part1" class="tab-content active">
+                <h3 style="color: var(--pixel-blue); font-size: 1.5rem; margin-bottom: 0.5rem;">Code : Clignotement Simple (500ms)</h3>
+                <p style="color: var(--text-muted);">La LED clignote de manière autonome avec une période d'une seconde complète (500ms ON / 500ms OFF).</p>
+                <pre><code><span class="comment">// Boucle infinie - main.c</span>
+<span class="keyword">while</span> (1)
+{
+    <span class="comment">// TogglePin lit l'état actuel de PA5 (0 ou 1) et l'inverse automatiquement</span>
+    <span class="function">HAL_GPIO_TogglePin</span>(GPIOA, GPIO_PIN_5);
+    
+    <span class="comment">// Pause bloquante de 500 millisecondes</span>
+    <span class="function">HAL_Delay</span>(500); 
+}</code></pre>
+            </div>
+
+            <div id="part2" class="tab-content">
+                <h3 style="color: var(--pixel-blue); font-size: 1.5rem; margin-bottom: 0.5rem;">Code : Contrôle Direct par Bouton</h3>
+                <p style="color: var(--text-muted);">Lecture de l'état logique. La LED s'allume uniquement lorsque le bouton utilisateur est maintenu enfoncé.</p>
+                <pre><code><span class="comment">// Boucle infinie - main.c</span>
+<span class="keyword">while</span> (1)
+{
+    <span class="comment">// L'état appuyé (relié à la masse) = 0 (RESET).</span>
+    <span class="keyword">if</span> (<span class="function">HAL_GPIO_ReadPin</span>(GPIOC, GPIO_PIN_13) == GPIO_PIN_RESET)
+    {
+        <span class="function">HAL_GPIO_WritePin</span>(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); <span class="comment">// Allumer</span>
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="function">HAL_GPIO_WritePin</span>(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); <span class="comment">// Éteindre</span>
+    }
+}</code></pre>
+            </div>
+
+            <div id="defi" class="tab-content">
+                <h3 style="color: var(--pixel-violet); font-size: 1.5rem; margin-bottom: 0.5rem;">Code : Variateur de Vitesse à 3 Modes</h3>
+                <p style="color: var(--text-muted);">Création d'une machine à états non-bloquante avec <code>HAL_GetTick()</code> pour garantir la détection instantanée des appuis.</p>
+                <pre><code><span class="comment">// Variables d'état (déclarées avant le while)</span>
+uint8_t mode = 0; <span class="comment">// 0: Lent, 1: Rapide, 2: Fixe</span>
+uint32_t dernier_temps = 0;
+uint8_t etat_precedent = GPIO_PIN_SET; 
+
+<span class="comment">// Boucle infinie - main.c</span>
+<span class="keyword">while</span>(1) {
+    uint32_t temps_actuel = <span class="function">HAL_GetTick</span>();
+    uint8_t etat_actuel = <span class="function">HAL_GPIO_ReadPin</span>(GPIOC, GPIO_PIN_13);
+
+    <span class="comment">// 1. DÉTECTION D'APPUI (Front descendant)</span>
+    <span class="keyword">if</span> (etat_actuel == GPIO_PIN_RESET && etat_precedent == GPIO_PIN_SET) {
+        <span class="function">HAL_Delay</span>(50); <span class="comment">// Anti-rebond logiciel</span>
+        <span class="keyword">if</span> (<span class="function">HAL_GPIO_ReadPin</span>(GPIOC, GPIO_PIN_13) == GPIO_PIN_RESET) {
+            mode = (mode + 1) % 3; 
+            <span class="keyword">if</span> (mode == 2) <span class="function">HAL_GPIO_WritePin</span>(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); 
+        }
+    }
+    etat_precedent = etat_actuel;
+
+    <span class="comment">// 2. GESTION LED NON-BLOQUANTE</span>
+    <span class="keyword">if</span> (mode == 0 && (temps_actuel - dernier_temps >= 1000)) {
+        dernier_temps = temps_actuel;
+        <span class="function">HAL_GPIO_TogglePin</span>(GPIOA, GPIO_PIN_5);
+    } <span class="keyword">else if</span> (mode == 1 && (temps_actuel - dernier_temps >= 200)) {
+        dernier_temps = temps_actuel;
+        <span class="function">HAL_GPIO_TogglePin</span>(GPIOA, GPIO_PIN_5);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <h2 class="section-title">2. Post-Lab : Analyse Technique</h2>
+        <section class="qa-grid">
+            <div class="qa-card">
+                <div class="qa-question">Pourquoi la broche PA5 est-elle configurée en GPIO_Output et pas en GPIO_Input ?</div>
+                <div class="qa-answer">La broche doit fournir l'énergie électrique pour allumer la LED. Une configuration <code>Output</code> permet d'agir comme source (~3.3V). À l'inverse, <code>Input</code> sert uniquement à "écouter" une tension sans fournir de courant.</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">À quoi sert l'option Pull-up sur la broche du bouton (PC13) ?</div>
+                <div class="qa-answer">Elle connecte une résistance interne à 3.3V, garantissant que la broche lise un état HAUT (1) stable quand le bouton est relâché. Sans elle, la broche capterait des bruits électromagnétiques créant des faux contacts.</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">Quelle est la différence entre HAL_GPIO_WritePin() et HAL_GPIO_TogglePin() ?</div>
+                <div class="qa-answer"><code>WritePin()</code> force un état absolu (0 ou 1). <code>TogglePin()</code> lit l'état actuel et l'inverse automatiquement, ce qui est idéal pour les clignotements.</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">Pourquoi doit-on appeler HAL_Init() au tout début du main ?</div>
+                <div class="qa-answer">Elle initialise la couche matérielle et surtout démarre le timer "SysTick", qui est indispensable pour utiliser les fonctions de délai (<code>HAL_Delay()</code> et <code>HAL_GetTick()</code>).</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">Que se passe-t-il si j'oublie la macro __HAL_RCC_GPIOA_CLK_ENABLE() ?</div>
+                <div class="qa-answer">L'horloge du port A restera éteinte (économie d'énergie par défaut sur STM32). Le processeur ignorera toutes vos instructions concernant PA5 et la LED restera éteinte.</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">C'est quoi le phénomène de "Rebond" (Bouncing) ?</div>
+                <div class="qa-answer">Lorsqu'on appuie sur un bouton mécanique, les contacts métalliques vibrent très rapidement. Le microcontrôleur est si rapide qu'il interprète ces vibrations comme plusieurs dizaines d'appuis successifs au lieu d'un seul.</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">Puis-je brancher une LED sur PA0 sans résistance en configurant la broche ?</div>
+                <div class="qa-answer"><strong>Non.</strong> Sans résistance série externe, la LED appellera trop de courant (court-circuit virtuel), ce qui grillera la LED et détruira probablement la broche du STM32.</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">Dans le défi (mode lent), que se passe-t-il si j'appuie pendant le HAL_Delay(1000) ?</div>
+                <div class="qa-answer">Rien. <code>HAL_Delay()</code> est "bloquante". Pendant 1 seconde, le CPU est gelé et ne lit pas le bouton. L'appui sera totalement ignoré.</div>
+            </div>
+            <div class="qa-card">
+                <div class="qa-question">Comment détecter le bouton immédiatement pendant un clignotement lent ?</div>
+                <div class="qa-answer">En créant une <strong>Machine à états non-bloquante</strong> avec <code>HAL_GetTick()</code> (comme fait dans le défi), ou en configurant la broche PC13 pour générer des <strong>Interruptions matérielles (EXTI)</strong>.</div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 1. Generation des étoiles
+        const starContainer = document.getElementById('stars');
+        for (let i = 0; i < 200; i++) {
+            let star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            starContainer.appendChild(star);
+        }
+
+        // 2. Logique du Simulateur ("Jumeau Numérique")
+        let currentManip = 1; 
+        let blinkInterval = null;
+        let variatorMode = 0; // 0: lent, 1: rapide, 2: fixe
+
+        const simBtn = document.getElementById('sim-btn');
+        const simLed = document.getElementById('sim-led');
+        const simStatus = document.getElementById('sim-status');
+        const simHelper = document.getElementById('sim-helper');
+
+        function startVariatorBlink() {
+            clearInterval(blinkInterval);
+            simLed.classList.remove('on');
+            if (variatorMode === 0) {
+                blinkInterval = setInterval(() => simLed.classList.toggle('on'), 1000);
+            } else if (variatorMode === 1) {
+                blinkInterval = setInterval(() => simLed.classList.toggle('on'), 200);
+            } else if (variatorMode === 2) {
+                simLed.classList.add('on');
+            }
+        }
+
+        function updateSimulationState() {
+            clearInterval(blinkInterval);
+            simLed.classList.remove('on');
+            variatorMode = 0;
+
+            if (currentManip === 1) {
+                simBtn.classList.add('disabled');
+                simStatus.innerText = "Simulateur Actif : Clignotement 500ms";
+                simHelper.innerText = "*Le bouton est ignoré dans cette manipulation. La LED clignote seule.*";
+                blinkInterval = setInterval(() => simLed.classList.toggle('on'), 500);
+            } 
+            else if (currentManip === 2) {
+                simBtn.classList.remove('disabled');
+                simStatus.innerText = "Simulateur Actif : Contrôle Direct";
+                simHelper.innerText = "*Maintenez le bouton bleu enfoncé pour allumer la LED.*";
+            } 
+            else if (currentManip === 3) {
+                simBtn.classList.remove('disabled');
+                simStatus.innerText = "Simulateur Actif : Variateur 3 Modes";
+                simHelper.innerText = "*Cliquez sur le bouton pour changer la vitesse (Lent -> Rapide -> Fixe).*";
+                startVariatorBlink();
+            }
+        }
+
+        // Evénements du bouton interactif
+        function handlePress(e) {
+            e.preventDefault();
+            if(currentManip === 1) return;
+            
+            if(currentManip === 2) {
+                simLed.classList.add('on');
+            } else if(currentManip === 3) {
+                variatorMode = (variatorMode + 1) % 3;
+                startVariatorBlink();
+            }
+        }
+
+        function handleRelease(e) {
+            e.preventDefault();
+            if(currentManip === 2) {
+                simLed.classList.remove('on');
+            }
+        }
+
+        simBtn.addEventListener('mousedown', handlePress);
+        simBtn.addEventListener('mouseup', handleRelease);
+        simBtn.addEventListener('mouseleave', handleRelease);
+        simBtn.addEventListener('touchstart', handlePress);
+        simBtn.addEventListener('touchend', handleRelease);
+
+        // 3. Gestion des Tabs
+        function openTab(evt, tabName, manipNum) {
+            currentManip = manipNum;
+            updateSimulationState();
+
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
+            evt.currentTarget.className += " active";
+        }
+
+        // Lancer la simulation 1 au démarrage
+        updateSimulationState();
+    </script>
+</body>
+</html>
