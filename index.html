@@ -400,40 +400,38 @@
 
     <div class="container">
         
-        <h2 class="section-title">1. Jumeau Numérique & Codes Sources</h2>
+        <h2 class="section-title">1. Jumeaux Numériques & Codes Sources</h2>
         <section class="glass-panel">
             
             <div class="tabs">
-                <button class="tab-btn active" onclick="openTab(event, 'part1', 1)">Manip 1 : Clignotement</button>
-                <button class="tab-btn" onclick="openTab(event, 'part2', 2)">Manip 2 : Bouton Poussoir</button>
-                <button class="tab-btn" onclick="openTab(event, 'defi', 3)">Manip 3 : Défi Variateur</button>
+                <button class="tab-btn active" onclick="openTab(event, 'part1')">Manip 1 : Clignotement</button>
+                <button class="tab-btn" onclick="openTab(event, 'part2')">Manip 2 : Bouton Poussoir</button>
+                <button class="tab-btn" onclick="openTab(event, 'defi')">Manip 3 : Défi Variateur</button>
             </div>
-
-            <div class="hardware-container">
-                <div class="sim-status-bar" id="sim-status">Simulateur Actif : Clignotement 500ms</div>
-                <div class="component">
-                    <div class="btn-viz disabled" id="sim-btn"></div>
-                    <p style="font-weight: bold;">Bouton (PC13)</p>
-                </div>
-                <div class="wire" style="background: var(--pixel-violet);"></div>
-                <div class="board">
-                    <div class="chip"></div>
-                    <div class="pin pc13" title="PC13"></div>
-                    <div class="pin pa5" title="PA5"></div>
-                </div>
-                <div class="wire" style="background: var(--pixel-blue);"></div>
-                <div class="component">
-                    <div class="led-viz" id="sim-led"></div>
-                    <p style="font-weight: bold;">LED Externe (PA5)</p>
-                </div>
-            </div>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;" id="sim-helper">
-                *Le bouton est ignoré dans cette manipulation.*
-            </p>
 
             <div id="part1" class="tab-content active">
-                <h3 style="color: var(--pixel-blue); font-size: 1.5rem; margin-bottom: 0.5rem;">Code : Clignotement Simple (500ms)</h3>
-                <p style="color: var(--text-muted);">La LED clignote de manière autonome avec une période d'une seconde complète (500ms ON / 500ms OFF).</p>
+                
+                <div class="hardware-container">
+                    <div class="sim-status-bar">Circuit Actif : Clignotement Autonome (500ms)</div>
+                    <div class="component">
+                        <div class="btn-viz disabled" id="btn1"></div>
+                        <p style="font-weight: bold; color: #555;">Bouton Inactif</p>
+                    </div>
+                    <div class="wire" style="background: #555;"></div>
+                    <div class="board">
+                        <div class="chip"></div>
+                        <div class="pin pc13" style="background: #555; box-shadow: none;"></div>
+                        <div class="pin pa5"></div>
+                    </div>
+                    <div class="wire" style="background: var(--pixel-blue);"></div>
+                    <div class="component">
+                        <div class="led-viz" id="led1"></div>
+                        <p style="font-weight: bold;">LED Externe (PA5)</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--pixel-blue); font-size: 1.5rem; margin-bottom: 0.5rem;">Code : Clignotement Simple</h3>
+                <p style="color: var(--text-muted);">La LED clignote de manière autonome (500ms ON / 500ms OFF). Le bouton n'est pas programmé dans ce code.</p>
                 <pre><code><span class="comment">// Boucle infinie - main.c</span>
 <span class="keyword">while</span> (1)
 {
@@ -446,6 +444,27 @@
             </div>
 
             <div id="part2" class="tab-content">
+                
+                <div class="hardware-container">
+                    <div class="sim-status-bar">Circuit Actif : Contrôle Direct</div>
+                    <div class="component">
+                        <div class="btn-viz" id="btn2"></div>
+                        <p style="font-weight: bold;">Bouton (PC13)</p>
+                    </div>
+                    <div class="wire" style="background: var(--pixel-violet);"></div>
+                    <div class="board">
+                        <div class="chip"></div>
+                        <div class="pin pc13"></div>
+                        <div class="pin pa5"></div>
+                    </div>
+                    <div class="wire" style="background: var(--pixel-blue);"></div>
+                    <div class="component">
+                        <div class="led-viz" id="led2"></div>
+                        <p style="font-weight: bold;">LED Externe (PA5)</p>
+                    </div>
+                </div>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: -10px; margin-bottom: 20px;">*Maintenez le bouton bleu enfoncé pour allumer la LED.*</p>
+
                 <h3 style="color: var(--pixel-blue); font-size: 1.5rem; margin-bottom: 0.5rem;">Code : Contrôle Direct par Bouton</h3>
                 <p style="color: var(--text-muted);">Lecture de l'état logique. La LED s'allume uniquement lorsque le bouton utilisateur est maintenu enfoncé.</p>
                 <pre><code><span class="comment">// Boucle infinie - main.c</span>
@@ -464,6 +483,27 @@
             </div>
 
             <div id="defi" class="tab-content">
+                
+                <div class="hardware-container">
+                    <div class="sim-status-bar">Circuit Actif : Variateur 3 Modes</div>
+                    <div class="component">
+                        <div class="btn-viz" id="btn3"></div>
+                        <p style="font-weight: bold;">Bouton (PC13)</p>
+                    </div>
+                    <div class="wire" style="background: var(--pixel-violet);"></div>
+                    <div class="board">
+                        <div class="chip"></div>
+                        <div class="pin pc13"></div>
+                        <div class="pin pa5"></div>
+                    </div>
+                    <div class="wire" style="background: var(--pixel-blue);"></div>
+                    <div class="component">
+                        <div class="led-viz" id="led3"></div>
+                        <p style="font-weight: bold;">LED Externe (PA5)</p>
+                    </div>
+                </div>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: -10px; margin-bottom: 20px;">*Cliquez sur le bouton pour changer le mode (Lent -> Rapide -> Fixe).*</p>
+
                 <h3 style="color: var(--pixel-violet); font-size: 1.5rem; margin-bottom: 0.5rem;">Code : Variateur de Vitesse à 3 Modes</h3>
                 <p style="color: var(--text-muted);">Création d'une machine à états non-bloquante avec <code>HAL_GetTick()</code> pour garantir la détection instantanée des appuis.</p>
                 <pre><code><span class="comment">// Variables d'état (déclarées avant le while)</span>
@@ -554,83 +594,61 @@ uint8_t etat_precedent = GPIO_PIN_SET;
             starContainer.appendChild(star);
         }
 
-        // 2. Logique du Simulateur ("Jumeau Numérique")
-        let currentManip = 1; 
-        let blinkInterval = null;
-        let variatorMode = 0; // 0: lent, 1: rapide, 2: fixe
+        // ================= LOGIQUE DES SIMULATEURS ISOLÉS =================
+        
+        // --- MANIP 1 : Clignotement Automatique ---
+        const led1 = document.getElementById('led1');
+        setInterval(() => {
+            led1.classList.toggle('on');
+        }, 500); // Clignote toutes les 500ms
 
-        const simBtn = document.getElementById('sim-btn');
-        const simLed = document.getElementById('sim-led');
-        const simStatus = document.getElementById('sim-status');
-        const simHelper = document.getElementById('sim-helper');
+        // --- MANIP 2 : Bouton Poussoir Maintenu ---
+        const btn2 = document.getElementById('btn2');
+        const led2 = document.getElementById('led2');
 
-        function startVariatorBlink() {
-            clearInterval(blinkInterval);
-            simLed.classList.remove('on');
-            if (variatorMode === 0) {
-                blinkInterval = setInterval(() => simLed.classList.toggle('on'), 1000);
-            } else if (variatorMode === 1) {
-                blinkInterval = setInterval(() => simLed.classList.toggle('on'), 200);
-            } else if (variatorMode === 2) {
-                simLed.classList.add('on');
+        const turnOnLed2 = (e) => { e.preventDefault(); led2.classList.add('on'); };
+        const turnOffLed2 = (e) => { e.preventDefault(); led2.classList.remove('on'); };
+
+        btn2.addEventListener('mousedown', turnOnLed2);
+        btn2.addEventListener('touchstart', turnOnLed2);
+        
+        btn2.addEventListener('mouseup', turnOffLed2);
+        btn2.addEventListener('mouseleave', turnOffLed2);
+        btn2.addEventListener('touchend', turnOffLed2);
+
+        // --- MANIP 3 : Défi Variateur (Machine à états) ---
+        const btn3 = document.getElementById('btn3');
+        const led3 = document.getElementById('led3');
+        let mode3 = 0;
+        let interval3 = null;
+
+        function updateLed3() {
+            clearInterval(interval3);
+            led3.classList.remove('on');
+            if (mode3 === 0) {
+                interval3 = setInterval(() => led3.classList.toggle('on'), 1000); // Lent
+            } else if (mode3 === 1) {
+                interval3 = setInterval(() => led3.classList.toggle('on'), 200);  // Rapide
+            } else if (mode3 === 2) {
+                led3.classList.add('on'); // Fixe
             }
         }
 
-        function updateSimulationState() {
-            clearInterval(blinkInterval);
-            simLed.classList.remove('on');
-            variatorMode = 0;
-
-            if (currentManip === 1) {
-                simBtn.classList.add('disabled');
-                simStatus.innerText = "Simulateur Actif : Clignotement 500ms";
-                simHelper.innerText = "*Le bouton est ignoré dans cette manipulation. La LED clignote seule.*";
-                blinkInterval = setInterval(() => simLed.classList.toggle('on'), 500);
-            } 
-            else if (currentManip === 2) {
-                simBtn.classList.remove('disabled');
-                simStatus.innerText = "Simulateur Actif : Contrôle Direct";
-                simHelper.innerText = "*Maintenez le bouton bleu enfoncé pour allumer la LED.*";
-            } 
-            else if (currentManip === 3) {
-                simBtn.classList.remove('disabled');
-                simStatus.innerText = "Simulateur Actif : Variateur 3 Modes";
-                simHelper.innerText = "*Cliquez sur le bouton pour changer la vitesse (Lent -> Rapide -> Fixe).*";
-                startVariatorBlink();
-            }
-        }
-
-        // Evénements du bouton interactif
-        function handlePress(e) {
+        const handleBtn3Press = (e) => {
             e.preventDefault();
-            if(currentManip === 1) return;
-            
-            if(currentManip === 2) {
-                simLed.classList.add('on');
-            } else if(currentManip === 3) {
-                variatorMode = (variatorMode + 1) % 3;
-                startVariatorBlink();
-            }
-        }
+            mode3 = (mode3 + 1) % 3; // Bascule 0 -> 1 -> 2 -> 0
+            updateLed3();
+        };
 
-        function handleRelease(e) {
-            e.preventDefault();
-            if(currentManip === 2) {
-                simLed.classList.remove('on');
-            }
-        }
+        btn3.addEventListener('mousedown', handleBtn3Press);
+        btn3.addEventListener('touchstart', handleBtn3Press);
 
-        simBtn.addEventListener('mousedown', handlePress);
-        simBtn.addEventListener('mouseup', handleRelease);
-        simBtn.addEventListener('mouseleave', handleRelease);
-        simBtn.addEventListener('touchstart', handlePress);
-        simBtn.addEventListener('touchend', handleRelease);
+        // Initialiser la LED 3 au chargement
+        updateLed3();
 
-        // 3. Gestion des Tabs
-        function openTab(evt, tabName, manipNum) {
-            currentManip = manipNum;
-            updateSimulationState();
 
+        // ================= GESTION DES ONGLETS =================
+        function openTab(evt, tabName) {
             let i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
             for (i = 0; i < tabcontent.length; i++) {
@@ -645,9 +663,6 @@ uint8_t etat_precedent = GPIO_PIN_SET;
             setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
             evt.currentTarget.className += " active";
         }
-
-        // Lancer la simulation 1 au démarrage
-        updateSimulationState();
     </script>
 </body>
 </html>
